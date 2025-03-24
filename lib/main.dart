@@ -13,14 +13,14 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text("Custom Widget"),
+          title: const Text("Custom Widgets"),
         ),
         body: const Column(
           children: [
             LabeledDivider(
               label: "My Divider",
               thickness: 2.0,
-              color: Colors.amberAccent,
+              color: Colors.black,
             ),
             SizedBox(),
           ],
@@ -114,9 +114,20 @@ class RenderLabeledDivider extends RenderBox {
   void paint(PaintingContext context, Offset offset) {
     final paint = Paint()..color = _color;
     final double yCenter = offset.dy + size.height / 2;
+    final double lineWidth = (size.width - _textPainter.size.width) / 2;
+    const double padding = 10;
 
     // Draw the line
-    context.canvas.drawLine(offset, Offset(offset.dx + size.width, yCenter), paint);
+    context.canvas.drawLine(
+      Offset(offset.dx, yCenter),
+      Offset(offset.dx + lineWidth - padding, yCenter),
+      paint,
+    );
+    context.canvas.drawLine(
+      Offset(offset.dx + lineWidth + _textPainter.size.width + padding, yCenter),
+      Offset(offset.dx + size.width, yCenter),
+      paint,
+    );
 
     // Draw the text
     final double textStart = offset.dx + (size.width - _textPainter.size.width) / 2;
@@ -128,6 +139,7 @@ class RenderLabeledDivider extends RenderBox {
     super.describeSemanticsConfiguration(config);
     config
       ..isSemanticBoundary = true
-      ..label = "Divider with Test: $_label";
+      ..label = "Divider with Test: $_label"
+      ..textDirection = TextDirection.ltr;
   }
 }
