@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
         body: const Column(
           children: [
             LabeledDivider(
-              label: "My Labeled Divider",
+              label: "My Divider",
               thickness: 2.0,
               color: Colors.amberAccent,
             ),
@@ -44,7 +44,7 @@ class LabeledDivider extends LeafRenderObjectWidget {
 
   @override
   RenderLabeledDivider createRenderObject(BuildContext context) {
-    throw RenderLabeledDivider(
+    return RenderLabeledDivider(
       label: label,
       thickness: thickness,
       color: color,
@@ -78,6 +78,7 @@ class RenderLabeledDivider extends RenderBox {
     if (_label != value) {
       _label = value;
       markNeedsLayout();
+      markNeedsSemanticsUpdate();
     }
   }
 
@@ -107,7 +108,6 @@ class RenderLabeledDivider extends RenderBox {
     _textPainter.layout();
     final double textHeight = _textPainter.size.height;
     size = constraints.constrain(Size(double.maxFinite, _thickness + textHeight));
-    super.performLayout();
   }
 
   @override
@@ -121,14 +121,13 @@ class RenderLabeledDivider extends RenderBox {
     // Draw the text
     final double textStart = offset.dx + (size.width - _textPainter.size.width) / 2;
     _textPainter.paint(context.canvas, Offset(textStart, yCenter - _textPainter.size.height / 2));
-    super.paint(context, offset);
   }
 
   @override
   void describeSemanticsConfiguration(SemanticsConfiguration config) {
+    super.describeSemanticsConfiguration(config);
     config
       ..isSemanticBoundary = true
       ..label = "Divider with Test: $_label";
-    super.describeSemanticsConfiguration(config);
   }
 }
